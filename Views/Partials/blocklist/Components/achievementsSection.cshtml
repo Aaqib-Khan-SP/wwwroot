@@ -1,0 +1,6 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var videoModel = (ContentModels.AchievementsSection)Model.Content;
+    var videoSettingsModel = (ContentModels.ItemSettings)Model.Settings;
+}

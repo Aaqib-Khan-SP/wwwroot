@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var headerSectionModel = (ContentModels.HeaderSection)Model.Content;
+    var videoSettingsModel = (ContentModels.ItemSettings)Model.Settings;
+    var CurrentPage = UmbracoContext.PublishedRequest.PublishedContent;
+}
+
+  <div class="page-heading header-text" style="background-image: url(@headerSectionModel.BackgroundImage.Url());">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <span class="breadcrumb">
+              @foreach (var bpage in CurrentPage.Ancestors().OrderBy(x => x.Level))
+                {
+                    <a href="@bpage.Url()">@bpage.Name</a>
+                }
+                &nbsp;/&nbsp; @CurrentPage.Name
+          </span>
+          <h3>@CurrentPage.Name</h3>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,43 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+@await Html.PartialAsync("~/Views/Partials/metaData.cshtml")
+
+<body dir=@(currentCulture.Name == "ar"?"rtl":"ltr")>
+
+    <!-- ***** Preloader Start ***** -->
+    <div id="js-preloader" class="js-preloader">
+        <div class="preloader-inner">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Preloader End ***** -->
+    @await Html.PartialAsync("~/Views/Partials/navigation.cshtml")
+
+    @RenderBody()
+
+    @await Html.PartialAsync("~/Views/Partials/footer.cshtml")
+
+    <!-- Scripts -->
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/scripts/isotope.min.js"></script>
+    <script src="/scripts/owl-carousel.js"></script>
+    <script src="/scripts/counter.js"></script>
+    <script src="/scripts/custom.js"></script>
+
+</body>
+</html>

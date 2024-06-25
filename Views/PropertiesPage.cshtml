@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.PropertiesPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using UmbracoProject1.ViewModels
+@using Umbraco.Extensions;
+@{
+    Layout = "Master.cshtml";
+    var CurrentPage = UmbracoContext.PublishedRequest.PublishedContent;
+}
+@{
+    var products = Model.Children<Product>();
+    var query = Context?.Request?.Query["page"].ToString();
+    var page = string.IsNullOrWhiteSpace(query) ? 1 : Convert.ToInt32(query);
+}
+
+@await Html.PartialAsync("~/Views/Partials/blocklist/default.cshtml",Model.Sections)

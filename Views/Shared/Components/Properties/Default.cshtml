@@ -1,0 +1,92 @@
+﻿@using UmbracoProject1.Models.Pagination;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@inject UmbracoHelper umbracoHelper
+
+@model PaginatedList<Product>;
+@{
+    var query = Context?.Request?.Query["page"].ToString();
+    var pageNumber = string.IsNullOrWhiteSpace(query) ? 1 : Convert.ToInt64(query);
+    var prevDisabled = Model.HasPreviousPage;
+    var nextDisabled = Model.HasNextPage;
+}
+
+<div class="row properties-box">
+    @foreach (Product product in Model.Where(x => x.IsVisible))
+    {
+        <div class="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 @(product.Type.StartsWith("1")?"adv":"") @(product.Type.StartsWith("2")?"str":"") @(product.Type.StartsWith("3")?"pen":"")">
+            <div class="item">
+                <a href="@product.Url()">
+                    <img src="@product.Images?.FirstOrDefault()?.Url()" alt="">
+                </a>
+                @if (product.IsFeatured)
+                {
+                    <span class="category" style="background-color:lightblue;">
+                        <i class="fa fa-star"></i>
+                        @umbracoHelper.GetDictionaryValue("Prime")
+                    </span>
+                }
+                
+                <span class="category">
+                    @if (@product.Type.StartsWith("1"))
+                    {
+                        @umbracoHelper.GetDictionaryValue("Apartment")
+                    }
+                    else if (@product.Type.StartsWith("2"))
+                    {
+                        @umbracoHelper.GetDictionaryValue("Villa")
+                    }
+                    else if (@product.Type.StartsWith("3"))
+                    {
+                        @umbracoHelper.GetDictionaryValue("PentHouse")
+                    }
+                </span>
+                <h6>@umbracoHelper.GetDictionaryValue("AED") @product.Price &nbsp;</h6>
+                <h4><a href="@product.Url()">@product.Name</a></h4>
+                <ul>
+                    @foreach (var prod in product.Specifications)
+                    {
+                        var specItem = prod.Content as ContentModels.PropertySpecification;
+                        @if (@specItem.Type.StartsWith("1"))
+                        {
+                            <li>@umbracoHelper.GetDictionaryValue("Area"): <span>@specItem.Value</span></li>
+                        }
+                        else if (@specItem.Type.StartsWith("2"))
+                        {
+                            <li>@umbracoHelper.GetDictionaryValue("WashroomCount"): <span>@specItem.Value</span></li>
+                        }
+                        else if (@specItem.Type.StartsWith("3"))
+                        {
+                            <li>@umbracoHelper.GetDictionaryValue("BedroomCount"): <span>@specItem.Value</span></li>
+                        }
+                        else if (@specItem.Type.StartsWith("4"))
+                        {
+                            <li>@umbracoHelper.GetDictionaryValue("BedroomCount"): <span>@specItem.Value</span></li>
+                        }
+                    }
+                </ul>
+                <div class="main-button">
+                    <a href="@product.Url()">@umbracoHelper.GetDictionaryValue("ScheduleAVisit")</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="pagination">
+            @if (prevDisabled)
+            {
+                <li><a href="/properties?page=@(pageNumber - 1)">&lt;&lt;</a></li>
+            }
+            @for (int pageNo = 1; pageNo <= Model.TotalPages; pageNo++)
+            {
+                <li><a class="@(Model.PageIndex == pageNo ? "is_active" : "")" href="/properties?page=@pageNo">@pageNo</a></li>
+            }
+            @if (nextDisabled)
+            {
+                <li><a href="/properties?page=@(pageNumber + 1)">>></a></li>
+            }
+        </ul>
+    </div>
+</div>

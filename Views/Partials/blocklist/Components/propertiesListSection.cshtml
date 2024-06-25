@@ -1,0 +1,29 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var propertiesListSectionModel = (ContentModels.PropertiesListSection)Model.Content;
+    var query = Context?.Request?.Query["page"].ToString();
+    var page = string.IsNullOrWhiteSpace(query) ? 1 : Convert.ToInt32(query);
+}
+
+<div class="section properties">
+    <div class="container">
+        <ul class="properties-filter">
+            <li>
+                <a class="is_active" href="#!" data-filter="*">@Umbraco.GetDictionaryValue("ShowAll")</a>
+            </li>
+            <li>
+                <a href="#!" data-filter=".adv">@Umbraco.GetDictionaryValue("Apartment")</a>
+            </li>
+            <li>
+                <a href="#!" data-filter=".str">@Umbraco.GetDictionaryValue("Villa")</a>
+            </li>
+            <li>
+                <a href="#!" data-filter=".pen">@Umbraco.GetDictionaryValue("PentHouse")</a>
+            </li>
+        </ul>
+
+        @await Component.InvokeAsync("Properties", new { page, isFeatured = propertiesListSectionModel.ShowOnlyFeatured })
+
+    </div>
+</div>

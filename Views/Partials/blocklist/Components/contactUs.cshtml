@@ -1,0 +1,102 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Extensions;
+@using System.Text.RegularExpressions;
+@{
+    var contactUsModel = (ContentModels.ContactUs)Model.Content;
+    var videoSettingsModel = (ContentModels.ItemSettings)Model.Settings;
+}
+@{
+    var homePage = Umbraco.AssignedContentItem.AncestorOrSelf<HomePage>();
+}
+
+<div class="contact section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 offset-lg-4">
+                <div class="section-heading text-center">
+                    <h6>| @contactUsModel.Title</h6>
+                    <h2>@contactUsModel.Header</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <div id="map">
+                    @* @Html.Raw(@homePage.GoogleMapsEmbedApilink) *@
+                    <iframe src="@ExtractSrcFromIframe(@homePage.GoogleMapsEmbedApilink)" width="100%" height="500px" frameborder="0" style="border:0; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);" allowfullscreen=""></iframe>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="item phone">
+                            @* <img src="/images/phone-icon.png" alt="" style="max-width: 52px;"> *@
+                            <h6>@homePage.PhoneNumber<br><span>@Umbraco.GetDictionaryValue("PhoneNumber")</span></h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="item email">
+                            @* <img src="/images/email-icon.png" alt="" style="max-width: 52px;"> *@
+                            <h6>@homePage.EmailId<br><span>@Umbraco.GetDictionaryValue("Email")</span></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <form id="contact-form" action="" method="post">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <label for="name">@Umbraco.GetDictionaryValue("Full Name")</label>
+                                <input type="name" name="name" id="name" placeholder="@Umbraco.GetDictionaryValue("Full Name")" autocomplete="on" required>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <label for="email">@Umbraco.GetDictionaryValue("Email")</label>
+                                <input type="text" name="email" id="email" pattern="[^ @@]*@@[^ @@]*" placeholder="@Umbraco.GetDictionaryValue("Your Email")" required="">
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <label for="subject">@Umbraco.GetDictionaryValue("Subject")</label>
+                                <input type="subject" name="subject" id="subject" placeholder="@Umbraco.GetDictionaryValue("Subject")" autocomplete="on">
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <label for="message">@Umbraco.GetDictionaryValue("Message")</label>
+                                <textarea name="message" id="message" placeholder="@Umbraco.GetDictionaryValue("Your Message")"></textarea>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-12">
+                            <fieldset>
+                                <button type="submit" id="form-submit" class="orange-button">@Umbraco.GetDictionaryValue("Send Message")</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions{
+    public static string ExtractSrcFromIframe(string input)
+    {
+        string pattern = @"<iframe[^>]+src=""([^""]+)""[^>]*>";
+        Match match = Regex.Match(input, pattern);
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}

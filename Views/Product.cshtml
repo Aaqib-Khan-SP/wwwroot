@@ -1,0 +1,136 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Product>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Extensions;
+@using System.Text.RegularExpressions;
+
+@{
+    Layout = "Master.cshtml";
+    var CurrentPage = UmbracoContext.PublishedRequest.PublishedContent;
+}
+
+<div class="single-property main-banner section mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main-image" dir="ltr">
+                    <div class="owl-carousel owl-banner">
+                        @foreach (var image in Model.Images.Select((value, i) => new { i, value }))
+                        {
+                            <div class="item pt-5 ps-5" style="background-image: url('@image.value.Url()');height:630px;">
+                                @if (image.i == 0)
+                                {
+                                    <div class="header-text">
+                                        <span class="category">@Model.Address, <em>@Model.Country</em></span>
+                                        <h2>@Model.Name</h2>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="main-content">
+                            <span class="category">
+                                @if (Model.Type.StartsWith("1"))
+                                {
+                                    @Umbraco.GetDictionaryValue("Apartment")
+                                }
+                                else if (Model.Type.StartsWith("2"))
+                                {
+                                    @Umbraco.GetDictionaryValue("Villa")
+                                }
+                                else if (Model.Type.StartsWith("3"))
+                                {
+                                    @Umbraco.GetDictionaryValue("PentHouse")
+                                }
+                            </span><br />
+                            @foreach (var slide in @Model.Description)
+                            {
+                                var slidecontent = slide.Content as ContentModels.RichTextRow;
+                                <br />
+                                <p>@slidecontent.Content</p>
+
+                                <br />
+                            }
+                        </div>
+                        <div class="accordion" id="accordionExample">
+                            @foreach (var faq in Model.QuestionsAndAnswers.Select((value, i) => new { i, value }))
+                            {
+                                var faqitem = faq.value.Content as ContentModels.QuestionAnswer;
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@faq.i" aria-expanded="true" aria-controls="@faq.i">
+                                            @faqitem.Question
+                                        </button>
+                                    </h2>
+                                    <div id="@faq.i" class="accordion-collapse collapse @(faq.i == 0 ? "show" : "")" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            @faqitem.Answer
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-xxl-4">
+                        <div class="info-table">
+                            <ul>
+                                @foreach (var spec in Model.Specifications)
+                                {
+                                    var specItem = spec.Content as ContentModels.PropertySpecification;
+                                    <li>
+                                        @if (@specItem.Type.StartsWith("1"))
+                                        {
+                                            <img src="~/images/area.jpg" alt="" style="max-width: 52px;">
+                                            <h4>@specItem.Value<br><span>@Umbraco.GetDictionaryValue("Area")</span></h4>
+                                        }
+                                        else if (@specItem.Type.StartsWith("2"))
+                                        {
+                                            <img src="~/images/bath.png" alt="" style="max-width: 52px;">
+                                            <h4>@specItem.Value<br><span>@Umbraco.GetDictionaryValue("WashroomCount")</span></h4>
+                                        }
+                                        else if (@specItem.Type.StartsWith("3"))
+                                        {
+                                            <img src="~/images/bed.jpeg" alt="" style="max-width: 52px;">
+                                            <h4>@specItem.Value<br><span>@Umbraco.GetDictionaryValue("BedroomCount")</span></h4>
+                                        }
+                                        else if (@specItem.Type.StartsWith("4"))
+                                        {
+                                            <img src="~/images/bed.jpeg" alt="" style="max-width: 52px;">
+                                            <h4>@specItem.Value<br><span>@Umbraco.GetDictionaryValue("BedroomCount")</span></h4>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div><br />
+                <div class="row">
+                    <div id="map">
+                        @* @Html.Raw(@homePage.GoogleMapsEmbedApilink) *@
+                        <iframe src="@ExtractSrcFromIframe(Model.GoogleMapsLink)" width="100%" height="500px" frameborder="0" style="border:0; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);" allowfullscreen=""></iframe>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@functions {
+    public static string ExtractSrcFromIframe(string input)
+    {
+        string pattern = @"<iframe[^>]+src=""([^""]+)""[^>]*>";
+        Match match = Regex.Match(input, pattern);
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}

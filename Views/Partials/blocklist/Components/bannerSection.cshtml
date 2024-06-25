@@ -1,0 +1,20 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var ImageSlidesModel = (ContentModels.BannerSection)Model.Content;
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+}
+<div class="main-banner" dir="ltr">
+    <div class="owl-carousel owl-banner">
+        @foreach (var slide in ImageSlidesModel.Slides)
+        {
+            var slidecontent = slide.Content as ContentModels.ImageSlide;
+            <div class="item" style="background-image: url('@slidecontent.Image.Url()');">
+                <div class="header-text" dir="@(currentCulture.Name == "en" ? "ltr" : "rtl")">
+                    <span class="category">@slidecontent.Location , <em>@slidecontent.Country</em></span>
+                    <h2 style="letter-spacing: 7px;">@slidecontent.Title</h2>
+                </div>
+            </div>
+        }
+    </div>
+</div>

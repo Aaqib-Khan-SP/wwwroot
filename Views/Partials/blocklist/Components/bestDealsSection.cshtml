@@ -1,0 +1,204 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var videoModel = (ContentModels.BestDealsSection)Model.Content;
+    var videoSettingsModel = (ContentModels.ItemSettings)Model.Settings;
+    bool appartmentExists = false, villaExists = false, penthouseExists = false;
+    ContentModels.Product appartment = null, penthouse = null, villa = null;
+}
+
+@{
+    @foreach (var faq in videoModel.BestDeals.Select((value, i) => new { i, value }))
+    {
+        var faqitem = faq.value as ContentModels.Product;
+
+        @if (faqitem.Type.StartsWith("1"))
+        {
+            if (appartmentExists == false)
+            {
+                appartment = faqitem;
+                appartmentExists = true;
+            }
+        }
+        else if (faqitem.Type.StartsWith("2"))
+        {
+            if (villaExists == false)
+            {
+                villa = faqitem;
+                villaExists = true;
+            }
+        }
+        else if (faqitem.Type.StartsWith("3"))
+        {
+            if (penthouseExists == false)
+            {
+                penthouse = faqitem;
+                penthouseExists = true;
+            }
+        }
+    }
+}
+<div class="section best-deal" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="section-heading">
+                    <h6>| @videoModel.Title</h6>
+                    <h2>@videoModel.Header</h2>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="tabs-content">
+                    <div class="row">
+                        <div class="nav-wrapper ">
+                            <ul class="nav nav-tabs" role="tablist">
+                                @if (appartmentExists)
+                                {
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="appartment-tab" data-bs-toggle="tab" data-bs-target="#appartment" type="button" role="tab" aria-controls="appartment" aria-selected="true">@Umbraco.GetDictionaryValue("Apartment")</button>
+                                    </li>
+                                }
+                                @if (villaExists)
+                                {
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link @(appartmentExists == false ?"active":"")" id="villa-tab" data-bs-toggle="tab" data-bs-target="#villa" type="button" role="tab" aria-controls="villa" aria-selected="false">@Umbraco.GetDictionaryValue("Villa")</button>
+                                    </li>
+                                }
+                                @if (penthouseExists)
+                                {
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link @(appartmentExists == false && villaExists == false ?"active":"")" id="penthouse-tab" data-bs-toggle="tab" data-bs-target="#penthouse" type="button" role="tab" aria-controls="penthouse" aria-selected="false">@Umbraco.GetDictionaryValue("PentHouse")</button>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="myTabContent">
+                            @if (appartmentExists)
+                            {
+                                <div class="tab-pane fade show active" id="appartment" role="tabpanel" aria-labelledby="appartment-tab">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="/images/deal-02.jpg" alt=""><br /><br />
+                                            <div class="info-table" style="width:85%;margin:auto;">
+                                                <ul>
+                                                    @RenderSpecifications(appartment.Specifications)
+                                                </ul>
+                                            </div><br /><br />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <h2 style="align-content:center" class="col-md-12">@appartment.Name</h2>
+                                                @* <div class="icon-button col-md-5">
+                                                    <a href="#"><i class="fa fa-calendar"></i> @Umbraco.GetDictionaryValue("ScheduleAVisit")</a>
+                                                </div> *@
+                                            </div>
+                                            @foreach (var slide in @appartment.Description)
+                                            {
+                                                var slidecontent = slide.Content as ContentModels.RichTextRow;
+                                                <br />
+                                                <p>@slidecontent.Content</p>
+                                                <br />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            @if (villaExists)
+                            {
+                                <div class="tab-pane fade @(appartmentExists == false ?"show active":"")" id="villa" role="tabpanel" aria-labelledby="villa-tab">
+                                    <div class="row">
+
+                                        <div class="col-lg-6">
+                                            <img src="/images/deal-02.jpg" alt=""><br /><br />
+                                            <div class="info-table" style="width:85%;margin:auto;">
+                                                <ul>
+                                                    @RenderSpecifications(villa.Specifications)
+                                                </ul>
+                                            </div><br /><br />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <h2 style="align-content:center" class="col-md-12">@villa.Name</h2>
+                                                @* <div class="icon-button col-md-5">
+                                                    <a href="#"><i class="fa fa-calendar"></i>@Umbraco.GetDictionaryValue("ScheduleAVisit")</a>
+                                                </div> *@
+                                            </div>
+                                            @foreach (var slide in @villa.Description)
+                                            {
+                                                var slidecontent = slide.Content as ContentModels.RichTextRow;
+                                                <br />
+                                                <p>@slidecontent.Content</p>
+                                                <br />
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (penthouseExists)
+                            {
+                                <div class="tab-pane fade @(appartmentExists == false && villaExists == false ?"show active":"")" id="penthouse" role="tabpanel" aria-labelledby="penthouse-tab">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="/images/deal-02.jpg" alt=""><br /><br />
+                                            <div class="info-table" style="width:85%;margin:auto;">
+                                                <ul>
+                                                    @RenderSpecifications(penthouse.Specifications)
+                                                </ul>
+                                            </div><br /><br />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <h2 style="align-content:center" class="col-md-12">@penthouse.Name</h2>
+                                                @* <div class="icon-button col-md-5">
+                                                    <a href="#"><i class="fa fa-calendar"></i> @Umbraco.GetDictionaryValue("ScheduleAVisit")</a>
+                                                </div> *@
+                                            </div>
+                                            @foreach (var slide in @penthouse.Description)
+                                            {
+                                                var slidecontent = slide.Content as ContentModels.RichTextRow;
+                                                <br />
+                                                <p>@slidecontent.Content</p>
+                                                <br />
+                                            }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@functions {
+    public IHtmlContent RenderSpecifications(Umbraco.Cms.Core.Models.Blocks.BlockListModel specifications)
+    {
+        var htmlContent = new HtmlContentBuilder();
+
+        foreach (var spec in specifications)
+        {
+            var specItem = spec.Content as ContentModels.PropertySpecification;
+            htmlContent.AppendHtml("<li>");
+
+            if (specItem.Type.StartsWith("1"))
+            {
+                htmlContent.AppendHtml($"{Umbraco.GetDictionaryValue("Area")}<span>{specItem.Value}</span>");
+            }
+            else if (specItem.Type.StartsWith("2"))
+            {
+                htmlContent.AppendHtml($"{Umbraco.GetDictionaryValue("WashroomCount")}<span>{specItem.Value}</span>");
+            }
+            else if (specItem.Type.StartsWith("3") || specItem.Type.StartsWith("4"))
+            {
+                htmlContent.AppendHtml($"{Umbraco.GetDictionaryValue("BedroomCount")}<span>{specItem.Value}</span>");
+            }
+            htmlContent.AppendHtml("</li>");
+        }
+
+        return htmlContent;
+    }
+}

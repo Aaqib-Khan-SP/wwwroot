@@ -1,0 +1,41 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+    var currentPage = UmbracoContext.PublishedRequest.PublishedContent;
+    var homePage = Umbraco.AssignedContentItem.AncestorOrSelf<HomePage>();
+    var children = homePage.Children.Where(x => x.IsVisible()) ?? Enumerable.Empty<IPublishedContent>();
+
+    string targetCultureCode = currentCulture.Name == "en" ? "ar" : "en"; // Target opposite culture
+}
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="@homePage.Url()" class="logo">
+                        <img src="@homePage.Logo.Url()" alt="" style="max-width: 250px; padding-top: 5px;">
+                    </a>
+
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a style="font-size:18px;font-weight:bold;" href="@homePage.Url()" class="@((currentPage.Url() == homePage.Url()) ? "active" : "")">@homePage.Name</a></li>
+                        @if (children != null && children.Any())
+                        {
+                            foreach (var item in children)
+                            {
+                                <li><a style="font-size:18px;font-weight:bold;" href="@item.Url()" class="@((currentPage.Url() == item.Url()) ? "active" : "")">@item.Name</a></li>
+                            }
+                        }
+                        <li><a style="font-size:18px;font-weight:bold;" href="/@targetCultureCode"> <i class="fa fa-language"></i> @targetCultureCode.ToUpper() </a></li>
+                        <li></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>

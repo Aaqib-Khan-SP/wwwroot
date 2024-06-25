@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Extensions;
+@{
+    var homePage = Umbraco.AssignedContentItem.AncestorOrSelf<HomePage>();
+}
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <div class="row">
+                <p class="col-md-8">@homePage.FooterText</p>
+                <p class="col-md-4">@Umbraco.GetDictionaryValue("DesignedBy") : <a rel="nofollow" href="https://www.boltrr.com" target="_blank">Boltrr.com</p>
+            </div>
+        </div>
+    </div>
+</footer>
